@@ -1,0 +1,40 @@
+
+
+html,
+body {
+  height: 100%;
+  margin: 0
+}
+
+#game table{
+	height: 100%;
+	margin: auto;
+	table-layout: fixed;
+	border-collapse: collapse;
+	font-size: x-small;
+}
+
+#game table td {
+	text-align: center;
+	vertical-align: middle;
+	border: thin lightgrey solid;
+}
+
+#game td.empty {
+	background-color: white;
+}
+
+
+#game td.snake {
+	background-color: black;
+}
+
+#game td.snake.head {
+	background-color: red;
+}
+
+#game td.food {
+	background-image: url('http://www.fordesigner.com/imguploads/Image/cjbc/zcool/png20080526/1211809336.png') ;
+	background-repeat: no-repeat ;
+	background-size: contain;
+}
