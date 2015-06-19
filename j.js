@@ -208,7 +208,7 @@ $(document).ready(function(){
     console.log(e);
     if (e.keyCode >=37 && e.keyCode <=40) {
 
-      switch(e.keyCode) {
+      switch(e.keyCode) { 
         case 37:
             direction = W;
             break;
