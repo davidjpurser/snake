@@ -40,26 +40,30 @@ $(document).ready(function(){
     main.append(table);
     console.log('starting');
     game = [];
-    tds =[];
     for (var i = 0; i < height; i++){
       game[i] = [];
       tds[i] = [];
       var tr = $('<tr/>');
       table.append(tr);
       for (var j = 0; j < width; j++){
-        game[i][j] = O;
+
         var td = $('<td>');
-        tds[i][j] = td;
         tr.append(td);
         td.data('row', i);
         td.data('column', j);
-        update(td);
+        game[i][j] = {
+          state: 0,
+          td: td,
+          food: false
+
+        };
+        updateCoord(get(i,j));
       }
     }
-    game[0][0] = H;
-    update(tds[0][0]);
     last = get(0,0);
     head = get(0,0);
+    setGameState(head, H);
+    updateCoord(head);
     direction = E;
 
   }
@@ -69,12 +73,8 @@ $(document).ready(function(){
   }
 
   function updateCoord(coord){
-    update(tds[coord.x][coord.y]);
-  }
-
-  function update(td) {
-    var coords = getCoodsFromTd(td);
-    var state = game[coords.x][coords.y];
+    var td = game[coord.x][coord.y].td;
+    var state = gameState(coord);
     switch(state) {
         case N:
             td.html("N");
@@ -89,13 +89,20 @@ $(document).ready(function(){
             td.html("W");
             break;
         case H:
-            console.log("Doing this");
             td.html("H");
             break;
         default:
             td.html("O");
     }
 
+    if (isFood(coord)) {
+      td.append("<sub>F</sub>");
+    }
+
+  }
+
+  function isFood(coord) {
+    return game[coord.x][coord.y].food;
   }
 
   function mod(n, m) {
@@ -127,19 +134,18 @@ $(document).ready(function(){
   }
 
   function gameState(coord) {
-    return game[coord.x][coord.y];
+    return game[coord.x][coord.y].state;
   }
 
   function setGameState(coord, state) {
-    game[coord.x][coord.y] = state;
+    game[coord.x][coord.y].state = state;
   }
 
   function next() {
-
+    var eat = false;
     var shouldBeNext = getInDir(head, direction);
-    if (gameState(shouldBeNext) == F) {
-      eaten++;
-    } else if (gameState(shouldBeNext) != O) {
+
+    if (gameState(shouldBeNext) != O) {
       endGame();
       return;
     }
@@ -148,18 +154,17 @@ $(document).ready(function(){
     updateCoord(head);
     head = shouldBeNext;
     setGameState(head, H);
-    console.log(head, gameState(head));
     updateCoord(head);
-    if (eaten > 0) {
-      eaten--;
+
+    if (isFood(last)) {
+      removeFood(last);
+      updateCoord(last);
     } else {
       var newLast = getInDir(last, gameState(last));
       setGameState(last, O);
       updateCoord(last);
       last = newLast;
     }
-
-
   }
 
   function endGame(){
@@ -172,9 +177,18 @@ $(document).ready(function(){
       var rx = getRandomInt(width);
       var ry = getRandomInt(height);
       coord = get(rx,ry);
-    } while (gameState(coord) != O)
-    setGameState(coord, F)
+    } while (gameState(coord).state !=O && isFood(coord))
+
+    console.log(coord, gameState(coord));
+    putFood(coord)
     updateCoord(coord);
+  }
+
+  function putFood(coord) {
+    game[coord.x][coord.y].food = true;
+  }
+  function removeFood(coord) {
+     game[coord.x][coord.y].food = false;
   }
 
   //get a number between 0 and max - 1 (max not included)
