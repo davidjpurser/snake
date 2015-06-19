@@ -4,13 +4,6 @@
 $(document).ready(function(){
 
 
-  var width = 10;
-  var height = 10;
-  var game = [];
-  var tds = [];
-  var eaten = 0;
-  var length = 0;
-
   var N = 1;
   var E = 2;
   var S = 3;
@@ -18,9 +11,18 @@ $(document).ready(function(){
   var O = 0;
   var H = 5;
   var F = 6;
+
   var last;
   var head;
   var direction;
+  var timer;
+
+  var width = 10;
+  var height = 10;
+
+  var game = [];
+  var foodInPlay = 0;
+  var spacesInPlay = 0;
 
 
   function get(x,y){
@@ -38,11 +40,13 @@ $(document).ready(function(){
 
 
     main.append(table);
-    console.log('starting');
+
+    spacesInPlay = width * height -1;
+    foodInPlay = 0;
+
     game = [];
     for (var i = 0; i < height; i++){
       game[i] = [];
-      tds[i] = [];
       var tr = $('<tr/>');
       table.append(tr);
       for (var j = 0; j < width; j++){
@@ -65,7 +69,9 @@ $(document).ready(function(){
     setGameState(head, H);
     updateCoord(head);
     direction = E;
-
+    timer = setInterval(function() {
+      next();
+    }, 300);
   }
 
   function getCoodsFromTd(td){
@@ -142,46 +148,81 @@ $(document).ready(function(){
   }
 
   function next() {
-    var eat = false;
+
+    if (getRandomInt(9) >= 6) {
+      addFood();
+    }
+
     var shouldBeNext = getInDir(head, direction);
+
+    if (isFood(last)) {
+      removeFood(last);
+      updateCoord(last);
+      spacesInPlay--;
+    } else {
+      var directionLast = gameState(last);
+      if (directionLast == H) {
+        console.log("is head");
+        directionLast = direction;
+      }
+      var newLast = getInDir(last, directionLast);
+      setGameState(last, O);
+      updateCoord(last);
+      last = newLast;
+    }
 
     if (gameState(shouldBeNext) != O) {
       endGame();
       return;
     }
 
-    setGameState(head, direction);
-    updateCoord(head);
+    if (isFood(shouldBeNext)) {
+      foodInPlay--;
+    }
+
+    //gameState == 0 means that it head == last as the last management has moved the last forward once already (to the new shouldBeNext).
+    if (gameState(last) != O) {
+      setGameState(head, direction);
+      updateCoord(head);
+    }
     head = shouldBeNext;
     setGameState(head, H);
     updateCoord(head);
 
-    if (isFood(last)) {
-      removeFood(last);
-      updateCoord(last);
-    } else {
-      var newLast = getInDir(last, gameState(last));
-      setGameState(last, O);
-      updateCoord(last);
-      last = newLast;
-    }
+    $('#food').html(foodInPlay);
+    $('#spaces').html(spacesInPlay);
+    
   }
 
   function endGame(){
+    clearInterval(timer);
     alert('die');
   }
 
   function addFood(){
-    var coord;
-    do {
-      var rx = getRandomInt(width);
-      var ry = getRandomInt(height);
-      coord = get(rx,ry);
-    } while (gameState(coord).state !=O && isFood(coord))
+    if (spacesInPlay > 0 && foodInPlay < 2){
+      var coord;
+      do {
+        var rx = getRandomInt(width);
+        var ry = getRandomInt(height);
+        coord = get(rx,ry);
+      } while (gameState(coord) != O && isFood(coord))
 
-    console.log(coord, gameState(coord));
-    putFood(coord)
-    updateCoord(coord);
+      putFood(coord)
+      foodInPlay++;
+      updateCoord(coord);
+    }
+  }
+
+  function isSpaceForFood() {
+    for (var i = 0; i < width; i++) {
+      for (var j = 0; j < height; j++){
+        if (gameState(get(i,j)) == O) {
+          return true;
+        } 
+      }
+    }
+    return false;
   }
 
   function putFood(coord) {
@@ -204,6 +245,11 @@ $(document).ready(function(){
     next();
   });
 
+  $('#stop').on('click', function(){
+    endGame();
+  });
+
+
   $('body').on('keydown', function(e){
     console.log(e);
     if (e.keyCode >=37 && e.keyCode <=40) {
@@ -222,9 +268,8 @@ $(document).ready(function(){
             direction = S;
             break;
       } 
-      next();
     } else if(e.keyCode == 32){
-        addFood();
+        // addFood();
     }
 
   });
