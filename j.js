@@ -333,6 +333,7 @@ $(document).ready(function(){
 
 
   $('#game').hide();
+  $('#hide').hide();
 
   $('body').on('keydown', function(e){
     console.log(e);
