@@ -3,12 +3,44 @@
 html,
 body {
   height: 100%;
-  margin: 0
+  margin: 0;
+  background: lightblue;
+}
+
+header {
+	margin: auto;
+	width: 800;
+	border-bottom: medium darkgrey solid;
+	margin-bottom: 20px;
+}
+main {
+	width: 800;
+	margin: auto;
+}
+h1 {
+	display: inline-block;
+	margin: 2px;
+}
+h2 {
+	display: inline-block;
+	margin: 2px;
+}
+nav{
+	display: block;
+	width: 100%
+}
+
+#counter{
+	display: inline-block;
+}
+
+#game {
+	margin: auto;
 }
 
 #game table{
 	height: 100%;
-	margin: auto;
+	width:100%;
 	table-layout: fixed;
 	border-collapse: collapse;
 	font-size: x-small;
@@ -26,15 +58,34 @@ body {
 
 
 #game td.snake {
-	background-color: black;
+	background-color: grey;
 }
 
 #game td.snake.head {
 	background-color: red;
 }
+#game td.snake.head {
+	background-size: contain;
+	background-repeat: no-repeat;
+}
+/*#game td.snake.head.north {
+	background-image: url(arrownorth.png) ;
+}
+#game td.snake.head.east {
+	background-image: url(arroweast.png) ;
+}
+#game td.snake.head.west {
+	background-image: url(arrowwest.png) ;
+}
+#game td.snake.head.south {
+	background-image: url(arrowsouth.png) ;
+}*/
 
 #game td.food {
-	background-image: url('http://www.fordesigner.com/imguploads/Image/cjbc/zcool/png20080526/1211809336.png') ;
+	background-image: url('food.png') ;
 	background-repeat: no-repeat ;
 	background-size: contain;
 }
+
+
+

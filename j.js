@@ -10,7 +10,6 @@ $(document).ready(function(){
   var W = 4;
   var O = 0;
   var H = 5;
-  var F = 6;
 
   //coordinates of the head and tail of the snake
   var last;
@@ -21,6 +20,8 @@ $(document).ready(function(){
   var direction;
   //directions to use before falling back to last command
   var directionStack;
+  //last applied direction
+  var lastDirection;
 
   var width = 10;
   var height = 10;
@@ -36,8 +37,12 @@ $(document).ready(function(){
   /* Render & Setup */
   /******************/
 
+  $('#gameover').hide();
+  $('#counter').hide();
 
   function start(){
+    $('#gameover').hide();
+    $('#counter').show();
     var main = $('main #game');
     main.html("");
     var table = $('<table/>');
@@ -69,7 +74,8 @@ $(document).ready(function(){
 
   function endGame(){
     clearInterval(timer);
-    $('#gameover').html("GAME OVER!");
+    $('#gameover').show();
+    format();
   }
 
   function rerender(coord){
@@ -78,6 +84,7 @@ $(document).ready(function(){
 
     td.removeClass("snake");
     td.removeClass("empty");
+    td.removeClass("head");
     switch(state) {
         case N:
             td.addClass("snake");
@@ -257,7 +264,7 @@ $(document).ready(function(){
         var rx = getRandomInt(width);
         var ry = getRandomInt(height);
         coord = get(rx,ry);
-      } while (gameState(coord) != O && isFood(coord))
+      } while (gameState(coord) != O || isFood(coord));
 
       putFood(coord)
       foodInPlay++;
@@ -291,16 +298,21 @@ $(document).ready(function(){
 
   function format() {
     var wwidth = $(window).width();
-    var wheight = $(window).height() - 30;
+    var wheight = $(window).height() - $('header').outerHeight() - 30;
     var min = Math.min(wwidth, wheight);
 
-    $('#game table').width(min).height(min);
-    $('#game table td').width(wwidth / width);
+    $('#game').width(min).height(min);
+    $('header').width(Math.max(min, 800));
+
+    $('main').width(Math.max(min, 800));
   }
+  format();
 
   $(window).on('resize',function(){ format(); });
 
   $('#start').on('click', function(){
+    $('#about').hide();
+    $('#game').show();
     start();
     format();
   });
@@ -313,6 +325,14 @@ $(document).ready(function(){
     endGame();
   });
 
+  $('#about-toggle').on('click', function() {
+    $('#about').toggle();
+    $('#game').toggle();
+  });
+
+
+
+  $('#game').hide();
 
   $('body').on('keydown', function(e){
     console.log(e);
