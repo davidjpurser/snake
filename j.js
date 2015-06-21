@@ -31,8 +31,20 @@ $(document).ready(function(){
   var foodInPlay = 0;
   var spacesInPlay = 0;
 
-
-  
+  var configs = {
+    Hard: {
+      speed : 100,
+      border: false,
+      width: 25,
+      height: 25
+    },
+    Easy : {
+      speed : 250,
+      border: true,
+      width: 15,
+      height: 15
+    }
+  }
 
   /******************/
   /* Render & Setup */
@@ -390,21 +402,21 @@ $(document).ready(function(){
   }
 
   sliderEventBinder("speed-slider", "speed",{
-    value:100,
+    value: configs.Easy.speed,
     min: 50,
     max: 400,
     step: 25
   });
 
   sliderEventBinder("width-slider", "width",{
-    value:15,
+    value:configs.Easy.width,
     min: 10,
     max: 50,
     step: 5
   });
 
   sliderEventBinder("height-slider", "height",{
-    value:15,
+    value: configs.Easy.height,
     min: 10,
     max: 50,
     step: 5
@@ -414,22 +426,8 @@ $(document).ready(function(){
 
   $('.buttons input[type=button]').button();
 
-  $('input[type=button][value=Easy]').on("click", function() {
-    useConfig({
-      speed : 250,
-      border: true,
-      width: 15,
-      height: 15
-    });
-    start();
-  });
-  $('input[type=button][value=Hard]').on("click", function() {
-    useConfig({
-      speed : 100,
-      border: false,
-      width: 25,
-      height: 25
-    });
+  $('.defaultConfig').on("click", function() {
+    useConfig(configs[$(this).val()]);
     start();
   });
 
