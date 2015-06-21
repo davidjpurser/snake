@@ -52,6 +52,10 @@ nav{
 	float: left;
 	vertical-align: top;
 }
+#control p {
+	margin: 5 0;
+}
+
 #areaForGame {
 	margin-left: 210px;
 }

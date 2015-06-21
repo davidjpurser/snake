@@ -3,7 +3,8 @@
 
 $(document).ready(function(){
 
-  //constants
+  //constants 
+  //The order and offset is important for other methods!
   var N = 1;
   var E = 2;
   var S = 3;
@@ -40,6 +41,8 @@ $(document).ready(function(){
   $('#gameover').hide();
   $('#counter').hide();
 
+  var localStorageName = "lastUsedConfig";
+
   function initConfig() {
     config = {
       speed: parseInt($('#speed').val()),
@@ -48,9 +51,33 @@ $(document).ready(function(){
       height: parseInt($('#height').val())
 
     }
+    localStorage.setItem(localStorageName, JSON.stringify(config));
+  }
+
+  function retreiveLocalStorage() {
+    var lsconf = localStorage.getItem(localStorageName);
+    if (typeof(lsconf) == "string") {
+      useConfig(JSON.parse(lsconf));
+    }
+  }
+  
+  function useConfig(conf) {
+    config = conf;
+    $("#speed-slider").slider("value", config.speed);
+    $("#height-slider").slider("value", config.height);
+    $("#width-slider").slider("value", config.width);
+    if (config.border) {
+      $('#radio1' ).prop('checked',true);
+    } else {
+      $('#radio2' ).prop('checked',true);
+    }
+    $('.radio').buttonset('refresh');
   }
 
   function start(){
+
+    $('#about').hide();
+    $('#game').show();
     endGame();
     $('#gameover').hide();
     $('#counter').show();
@@ -89,6 +116,8 @@ $(document).ready(function(){
     timer = setInterval(function() {
       next();
     }, config.speed);
+
+    format();
   }
 
   function endGame(){
@@ -348,54 +377,67 @@ $(document).ready(function(){
   $(window).on('resize',function(){ format(); });
 
 
+  var sliderEventBinder = function(slidername, showbox, config) {
 
-  $( "#speed-slider" ).slider({
-    value:300,
-    min: 150,
-    max: 500,
-    step: 25,
-    slide: function( event, ui ) {
-      $('#speed').val( ui.value );
-    },
-    create: function( event, ui ) {
-      $('#speed').val( 300 );
+    var onFn = function() {
+      $('#' + showbox).val( $("#" + slidername).slider("value") );
     }
+    config.create = onFn;
+    config.slide = onFn;
+    config.change = onFn;
+
+    $( "#" + slidername ).slider(config);
+  }
+
+  sliderEventBinder("speed-slider", "speed",{
+    value:100,
+    min: 50,
+    max: 400,
+    step: 25
   });
 
-  $( "#width-slider" ).slider({
+  sliderEventBinder("width-slider", "width",{
     value:15,
     min: 10,
     max: 50,
-    step: 5,
-    slide: function( event, ui ) {
-      $('#width').val( ui.value );
-    },
-    create: function( event, ui ) {
-      $('#width').val( 15 );
-    }
+    step: 5
   });
 
-  $( "#height-slider" ).slider({
+  sliderEventBinder("height-slider", "height",{
     value:15,
     min: 10,
     max: 50,
-    step: 5,
-    slide: function( event, ui ) {
-      $('#height').val( ui.value );
-    },
-    create: function( event, ui ) {
-      $('#height').val( 15 );
-    }
+    step: 5
   });
 
   $('.radio').buttonset();
 
-  $('#start').on('click', function(){
-    $('#about').hide();
-    $('#game').show();
+  $('.buttons input[type=button]').button();
+
+  $('input[type=button][value=Easy]').on("click", function() {
+    useConfig({
+      speed : 250,
+      border: true,
+      width: 15,
+      height: 15
+    });
     start();
-    format();
   });
+  $('input[type=button][value=Hard]').on("click", function() {
+    useConfig({
+      speed : 100,
+      border: false,
+      width: 25,
+      height: 25
+    });
+    start();
+  });
+
+
+  $('#start').on('click', function(){
+    start();
+  });
+
 
   $('#next').on('click', function(){
     next();
@@ -432,14 +474,20 @@ $(document).ready(function(){
             dir = S;
             break;
       } 
-      directionStack.push(dir);
-      direction = dir;
+      if (!((dir - 1 + 2) % 4 + 1 == direction && directionStack.length == 0)){
 
+        directionStack.push(dir);
+        direction = dir;
+
+      }
     } else if(e.keyCode == 32){
         // addFood();
     }
 
   });
+
+  retreiveLocalStorage();
+
 
 
 
