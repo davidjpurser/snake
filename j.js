@@ -48,7 +48,6 @@ $(document).ready(function(){
       height: parseInt($('#height').val())
 
     }
-    console.log(config);
   }
 
   function start(){
@@ -78,7 +77,7 @@ $(document).ready(function(){
       var tr = $('<tr/>');
       table.append(tr);
       for (var j = 0; j < config.width; j++){
-        gs = defaultGameState(i, j);
+        gs = defaultGameState(j, i);
         tr.append(gs.td)
       }
     }
@@ -146,21 +145,19 @@ $(document).ready(function(){
     coord = dupli(coords);
     switch(dir) {
         case N:
-            coord.x = (coord.x -1);
+            coord.y = (coord.y -1);
             break;
         case E:
-            coord.y = (coord.y +1);
-            break;
-        case S:            
             coord.x = (coord.x +1);
             break;
+        case S:            
+            coord.y = (coord.y +1);
+            break;
         case W:
-            coord.y = (coord.y -1);
+            coord.x = (coord.x -1);
             break;
         default:
     }
-    console.log(config);
-    console.log(mod(coord.x, config.width));
     if (config.border){
       coord.x = mod(coord.x, config.width);
       coord.y = mod(coord.y, config.height);
@@ -218,8 +215,6 @@ $(document).ready(function(){
       endGame();
       return;
     }
-
-    console.log(shouldBeNext);
 
     var nextHeadGameState = gameState(shouldBeNext);
     // Fail if there is a (head taking anything other than the last) || a swap of head and tail
@@ -333,12 +328,20 @@ $(document).ready(function(){
   }
 
   function format() {
+
+    if (config == null) {
+      var sqw = 1;
+      var sqh = 1;
+    } else {
+        var sqw = config.width;
+        var sqh = config.height;
+    }
     var wwidth = $(window).width() - $('#control').width() -20;
     var wheight = $(window).height() - $('header').outerHeight() - 30;
-    var min = Math.min(wwidth, wheight);
+    var min = Math.min(wwidth /sqw, wheight/sqh);
 
-    $('body').width(Math.max(min) + $('#control').width() + 20);
-    $('#game table').width(min).height(min);
+    $('body').width(min * sqw + $('#control').width() + 20);
+    $('#game table').width(min * sqw).height(min* sqh);
   }
   format();
 
