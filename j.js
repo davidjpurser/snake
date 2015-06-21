@@ -365,7 +365,7 @@ $(document).ready(function(){
   }
 
   function mod(n, m) {
-        return ((n % m) + m) % m;
+    return ((n % m) + m) % m;
   }
 
   function format() {
@@ -374,8 +374,8 @@ $(document).ready(function(){
       var sqw = 1;
       var sqh = 1;
     } else {
-        var sqw = config.width;
-        var sqh = config.height;
+      var sqw = config.width;
+      var sqh = config.height;
     }
     var wwidth = $(window).width() - $('#control').width() -20;
     var wheight = $(window).height() - $('header').outerHeight() - 30;
@@ -385,6 +385,10 @@ $(document).ready(function(){
     $('#game table').width(min * sqw).height(min* sqh);
   }
   format();
+
+  /**********/
+  /* EVENTS */
+  /**********/
 
   $(window).on('resize',function(){ format(); });
 
@@ -431,19 +435,10 @@ $(document).ready(function(){
     start();
   });
 
-
   $('#start').on('click', function(){
     start();
   });
 
-
-  $('#next').on('click', function(){
-    next();
-  });
-
-  $('#stop').on('click', function(){
-    endGame();
-  });
 
   $('#about-toggle').on('click', function() {
     $('#about').toggle();
