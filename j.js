@@ -23,8 +23,8 @@ $(document).ready(function(){
   //last applied direction
   var lastDirection;
 
-  var width = 10;
-  var height = 10;
+  var config;
+
 
   var game = [];
   var foodInPlay = 0;
@@ -40,24 +40,44 @@ $(document).ready(function(){
   $('#gameover').hide();
   $('#counter').hide();
 
+  function initConfig() {
+    config = {
+      speed: parseInt($('#speed').val()),
+      border: $('input[name=border]:checked').val() == "1",
+      width: parseInt($('#width').val()),
+      height: parseInt($('#height').val())
+
+    }
+    console.log(config);
+  }
+
   function start(){
+    endGame();
     $('#gameover').hide();
     $('#counter').show();
+
+    initConfig();
+
     var main = $('main #game');
     main.html("");
     var table = $('<table/>');
 
+    if (config.border) {
+      table.addClass("openborder");
+    } else {
+      table.addClass("closedborder")
+    }
 
     main.append(table);
 
-    spacesInPlay = width * height -1;
+    spacesInPlay = config.width * config.height -1;
     foodInPlay = 0;
 
     game = [];
-    for (var i = 0; i < height; i++){
+    for (var i = 0; i < config.height; i++){
       var tr = $('<tr/>');
       table.append(tr);
-      for (var j = 0; j < width; j++){
+      for (var j = 0; j < config.width; j++){
         gs = defaultGameState(i, j);
         tr.append(gs.td)
       }
@@ -69,7 +89,7 @@ $(document).ready(function(){
     directionStack = [];
     timer = setInterval(function() {
       next();
-    }, 300);
+    }, config.speed);
   }
 
   function endGame(){
@@ -126,18 +146,28 @@ $(document).ready(function(){
     coord = dupli(coords);
     switch(dir) {
         case N:
-            coord.x = mod(coord.x -1, height);
+            coord.x = (coord.x -1);
             break;
         case E:
-            coord.y = mod(coord.y +1, height);
+            coord.y = (coord.y +1);
             break;
         case S:            
-            coord.x = mod(coord.x +1, height);
+            coord.x = (coord.x +1);
             break;
         case W:
-            coord.y = mod(coord.y -1, height);
+            coord.y = (coord.y -1);
             break;
         default:
+    }
+    console.log(config);
+    console.log(mod(coord.x, config.width));
+    if (config.border){
+      coord.x = mod(coord.x, config.width);
+      coord.y = mod(coord.y, config.height);
+    } else {
+      if (coord.x > config.width -1 || coord.x < 0 || coord.y< 0 || coord.y > config.height - 1) {
+        coord.outofbounds = true;
+      }
     }
     return coord;
   }
@@ -184,6 +214,12 @@ $(document).ready(function(){
     }
 
     var shouldBeNext = getInDir(head, dir);
+    if (shouldBeNext.outofbounds) {
+      endGame();
+      return;
+    }
+
+    console.log(shouldBeNext);
 
     var nextHeadGameState = gameState(shouldBeNext);
     // Fail if there is a (head taking anything other than the last) || a swap of head and tail
@@ -261,8 +297,8 @@ $(document).ready(function(){
     if (spacesInPlay > 0 && foodInPlay < 2){
       var coord;
       do {
-        var rx = getRandomInt(width);
-        var ry = getRandomInt(height);
+        var rx = getRandomInt(config.width);
+        var ry = getRandomInt(config.height);
         coord = get(rx,ry);
       } while (gameState(coord) != O || isFood(coord));
 
@@ -297,18 +333,59 @@ $(document).ready(function(){
   }
 
   function format() {
-    var wwidth = $(window).width();
+    var wwidth = $(window).width() - $('#control').width() -20;
     var wheight = $(window).height() - $('header').outerHeight() - 30;
     var min = Math.min(wwidth, wheight);
 
-    $('#game').width(min).height(min);
-    $('header').width(Math.max(min, 800));
-
-    $('main').width(Math.max(min, 800));
+    $('body').width(Math.max(min) + $('#control').width() + 20);
+    $('#game table').width(min).height(min);
   }
   format();
 
   $(window).on('resize',function(){ format(); });
+
+
+
+  $( "#speed-slider" ).slider({
+    value:300,
+    min: 150,
+    max: 500,
+    step: 25,
+    slide: function( event, ui ) {
+      $('#speed').val( ui.value );
+    },
+    create: function( event, ui ) {
+      $('#speed').val( 300 );
+    }
+  });
+
+  $( "#width-slider" ).slider({
+    value:15,
+    min: 10,
+    max: 50,
+    step: 5,
+    slide: function( event, ui ) {
+      $('#width').val( ui.value );
+    },
+    create: function( event, ui ) {
+      $('#width').val( 15 );
+    }
+  });
+
+  $( "#height-slider" ).slider({
+    value:15,
+    min: 10,
+    max: 50,
+    step: 5,
+    slide: function( event, ui ) {
+      $('#height').val( ui.value );
+    },
+    create: function( event, ui ) {
+      $('#height').val( 15 );
+    }
+  });
+
+  $('.radio').buttonset();
 
   $('#start').on('click', function(){
     $('#about').hide();
@@ -336,7 +413,6 @@ $(document).ready(function(){
   $('#hide').hide();
 
   $('body').on('keydown', function(e){
-    console.log(e);
     if (e.keyCode >=37 && e.keyCode <=40) {
       var dir;
       switch(e.keyCode) { 

@@ -1,20 +1,21 @@
 
 
-html,
+html {
+	height: 100%;
+}
 body {
   height: 100%;
-  margin: 0;
+  width:800;
+  margin: auto;
   background: lightblue;
 }
 
 header {
 	margin: auto;
-	width: 800;
 	border-bottom: medium darkgrey solid;
 	margin-bottom: 20px;
 }
 main {
-	width: 800;
 	margin: auto;
 }
 h1 {
@@ -30,15 +31,32 @@ nav{
 	width: 100%
 }
 
+.seethrough {
+	background: transparent;
+	border: none;
+	display: inline;
+	width:50%;
+	font-size: inherit;
+	font-style: inherit;
+	font-family: inherit;
+}
+
 #counter{
 	display: inline-block;
 }
 
-#counter {
+#control {
 	display: inline-block;
-}
+	width: 180px;
 
+	float: left;
+	vertical-align: top;
+}
+#areaForGame {
+	margin-left: 210px;
+}
 #game {
+	display: inline-block;
 	margin: auto;
 }
 
@@ -50,6 +68,13 @@ nav{
 	font-size: x-small;
 }
 
+#game table.openborder {
+	border: dotted grey medium;
+}
+
+#game table.closedborder {
+	border: solid grey medium;
+}
 #game table td {
 	text-align: center;
 	vertical-align: middle;

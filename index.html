@@ -1,6 +1,10 @@
 <html>
     <head>
     <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+    <link rel="stylesheet" href="jquery-ui/themes/smoothness/jquery-ui.css">
+    <script src="jquery-ui/jquery-ui.js"></script>
+    <link rel="stylesheet" href="jquery-ui/jquery-ui.theme.min.css">
+
     <script src="j.js"></script>
 
     <link rel="stylesheet" type="text/css" href="style.css">
@@ -32,11 +36,39 @@
             </nav>
         </header>
         <main>
+            <div id="control">
+                <p>
+                    Delay: <input type="text" id="speed" readonly class="seethrough">
 
-            <div id="game">
+                    <div id="speed-slider"></div>
+                </p>
+                <p>
+                 Border
+                    <div class="radio">
+                        <input type="radio" value="1" id="radio1" name="border"><label for="radio1">Open</label>
+                        <input type="radio" value="0" id="radio2" name="border" checked="checked"><label for="radio2">Closed</label>
+                    </div>
+                </p>
+                <p>
+                    Width: <input type="text" id="width" readonly class="seethrough">
 
+                    <div id="width-slider"></div>
+                </p>
+                <p>
+                    Height:<input type="text" id="height" readonly class="seethrough">
+
+                    <div id="height-slider"></div>
+                </p>
+                 
 
             </div>
+            <section id="areaForGame">
+                <div id="game">
+
+
+                </div>
+            </section>
+            
             <div id="about" >
             <p>
             Game of snake inspired by the Nokia 3310.
