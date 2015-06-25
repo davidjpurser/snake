@@ -23,35 +23,40 @@ $(document).ready(function(){
   var directionStack;
   //last applied direction
   var lastDirection;
-
+  //config in use
   var config;
 
-
+  //game array
   var game = [];
+
+  //counts
   var foodInPlay = 0;
   var spacesInPlay = 0;
+
+  
+
+  /***************************/
+  /* Render / Setup / Configs*/
+  /***************************/
 
   var configs = {
     Hard: {
       speed : 100,
       border: false,
       width: 25,
-      height: 25
+      height: 25,
+      maxfood: 1
     },
     Easy : {
       speed : 250,
       border: true,
       width: 15,
-      height: 15
+      height: 15,
+      maxfood: 2
     }
   }
 
-  /******************/
-  /* Render & Setup */
-  /******************/
-
-  $('#gameover').hide();
-  $('#counter').hide();
+  
 
   var localStorageName = "lastUsedConfig";
 
@@ -60,7 +65,8 @@ $(document).ready(function(){
       speed: parseInt($('#speed').val()),
       border: $('input[name=border]:checked').val() == "1",
       width: parseInt($('#width').val()),
-      height: parseInt($('#height').val())
+      height: parseInt($('#height').val()),
+      maxfood: parseInt($('#foodval').val())
 
     }
     localStorage.setItem(localStorageName, JSON.stringify(config));
@@ -84,12 +90,16 @@ $(document).ready(function(){
       $('#radio2' ).prop('checked',true);
     }
     $('.radio').buttonset('refresh');
+    $('#food-slider').slider("value",config.maxfood);
   }
 
   function start(){
 
     $('#about').hide();
     $('#game').show();
+    $('#about-toggle').show();
+
+    //Asser timer over 
     endGame();
     $('#gameover').hide();
     $('#counter').show();
@@ -142,9 +152,7 @@ $(document).ready(function(){
     var td = game[coord.x][coord.y].td;
     var state = gameState(coord);
 
-    td.removeClass("snake");
-    td.removeClass("empty");
-    td.removeClass("head");
+    td.removeClass("snake empty head");
     switch(state) {
         case N:
             td.addClass("snake");
@@ -159,8 +167,7 @@ $(document).ready(function(){
             td.addClass("snake");
             break;
         case H:
-            td.addClass("snake");
-            td.addClass("head");
+            td.addClass("snake head");
             break;
         default:
             td.addClass("empty");
@@ -238,11 +245,10 @@ $(document).ready(function(){
     rerender(coord);
   }
 
+  //advance the frame
   function next() {
 
-    if (getRandomInt(9) >= 6) {
-      addFood();
-    }
+    mayAddFood();
 
     var dir;
     if (directionStack.length == 0) {
@@ -329,8 +335,8 @@ $(document).ready(function(){
   /********/
   /* FOOD */
   /********/
-  function addFood(){
-    if (spacesInPlay > 0 && foodInPlay < 2){
+  function mayAddFood(){
+    if (spacesInPlay > 0 && foodInPlay < config.maxfood && getRandomInt(Math.pow(2, foodInPlay + 1)) < 1){
       var coord;
       do {
         var rx = getRandomInt(config.width);
@@ -384,7 +390,6 @@ $(document).ready(function(){
     $('body').width(min * sqw + $('#control').width() + 20);
     $('#game table').width(min * sqw).height(min* sqh);
   }
-  format();
 
   /**********/
   /* EVENTS */
@@ -392,16 +397,13 @@ $(document).ready(function(){
 
   $(window).on('resize',function(){ format(); });
 
-
   var sliderEventBinder = function(slidername, showbox, config) {
-
     var onFn = function() {
       $('#' + showbox).val( $("#" + slidername).slider("value") );
     }
     config.create = onFn;
     config.slide = onFn;
     config.change = onFn;
-
     $( "#" + slidername ).slider(config);
   }
 
@@ -426,6 +428,13 @@ $(document).ready(function(){
     step: 5
   });
 
+  sliderEventBinder("food-slider", "foodval",{
+    value: configs.maxfood,
+    min: 1,
+    max: 10,
+    step: 1
+  });
+
   $('.radio').buttonset();
 
   $('.buttons input[type=button]').button();
@@ -444,11 +453,6 @@ $(document).ready(function(){
     $('#about').toggle();
     $('#game').toggle();
   });
-
-
-
-  $('#game').hide();
-  $('#hide').hide();
 
   $('body').on('keydown', function(e){
     if (e.keyCode >=37 && e.keyCode <=40) {
@@ -479,6 +483,14 @@ $(document).ready(function(){
 
   });
 
+  $('#start').button();
+  $('#about-toggle').hide();
+
+  $('#gameover').hide();
+  $('#counter').hide();
+  $('#game').hide();
+  $('#hide').hide();
+  format();
   retreiveLocalStorage();
 
 
