@@ -12,23 +12,15 @@ body {
 
 header {
 	margin: auto;
-	border-bottom: medium darkgrey solid;
+	border-bottom: 2px darkgrey solid;
 	margin-bottom: 20px;
 }
 main {
 	margin: auto;
 }
-h1 {
+header > * {
 	display: inline-block;
 	margin: 2px;
-}
-h2 {
-	display: inline-block;
-	margin: 2px;
-}
-nav{
-	display: block;
-	width: 100%
 }
 
 .seethrough {
@@ -43,6 +35,8 @@ nav{
 
 #counter{
 	display: inline-block;
+	float: right;
+	margin-top:10px;
 }
 
 #control {
@@ -56,7 +50,7 @@ nav{
 	margin: 5 0;
 }
 
-#areaForGame {
+main > :not(#control) {
 	margin-left: 210px;
 }
 #game {
@@ -119,6 +113,17 @@ nav{
 	background-repeat: no-repeat ;
 	background-size: contain;
 }
-
+#gameover {
+	display: table;
+	background: rgba(100, 100, 100, 0.6);
+	font-size: 45px;
+	position: absolute;
+	text-align: center;
+	color: orange;
+}
+#gameover > div {
+	display: table-cell;
+	vertical-align: middle;
+}
 
 

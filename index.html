@@ -29,24 +29,22 @@
             <h1>Snake</h1>
             <h2>by <a href="http://www.davidpurser.net/">David Purser</a>
             </h2>
-            <nav>
-                <button id="about-toggle">About?</button>
-                
-                <div id="counter">
-                Spaces: <span id="spaces"></span>
-                Food: <span id="food"></span>
+            <div id="counter">
+                    Spaces: <span id="spaces"></span>
+                    Food: <span id="food"></span>
 
-                <span id ="gameover" > GAME OVER! </span>
-                </div>
-            </nav>
+             </div>
+            
         </header>
         <main>
             <div id="control">
                 <p>
+                Quick Configs:
                 <div class="buttons" >
                     <input class="defaultConfig" type="button" value="Easy" />
                     <input class="defaultConfig" type="button" value="Hard" />
                 </div>
+                <hr />
                 <p>
                     Delay: <input type="text" id="speed" readonly class="seethrough">
 
@@ -75,18 +73,23 @@
                     <div id="food-slider"></div>
                 </p>
                 <p>
-                    <button id="start">
+                    <button class="jqButton" id="start">
                         Start    
                     </button>
-                
+                    
+                    <button class="jqButton" id="about-toggle">About</button>
 
                 </p>
                  
 
             </div>
             <section id="areaForGame">
+                <div id="gameover">
+                    <div>
+                        GAME OVER!
+                    </div>
+                </div>
                 <div id="game">
-
 
                 </div>
             </section>

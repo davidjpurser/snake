@@ -96,7 +96,7 @@ $(document).ready(function(){
   function start(){
 
     $('#about').hide();
-    $('#game').show();
+    $('#areaForGame').show();
     $('#about-toggle').show();
 
     //Asser timer over 
@@ -388,7 +388,8 @@ $(document).ready(function(){
     var min = Math.min(wwidth /sqw, wheight/sqh);
 
     $('body').width(min * sqw + $('#control').width() + 20);
-    $('#game table').width(min * sqw).height(min* sqh);
+    $('#game table, #gameover').width(min * sqw).height(min* sqh);
+
   }
 
   /**********/
@@ -451,7 +452,7 @@ $(document).ready(function(){
 
   $('#about-toggle').on('click', function() {
     $('#about').toggle();
-    $('#game').toggle();
+    $('#areaForGame').toggle();
   });
 
   $('body').on('keydown', function(e){
@@ -483,12 +484,12 @@ $(document).ready(function(){
 
   });
 
-  $('#start').button();
+  $('.jqButton').button();
   $('#about-toggle').hide();
 
   $('#gameover').hide();
   $('#counter').hide();
-  $('#game').hide();
+  $('#areaForGame').hide();
   $('#hide').hide();
   format();
   retreiveLocalStorage();
