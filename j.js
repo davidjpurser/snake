@@ -90,7 +90,11 @@ $(document).ready(function(){
       $('#radio2' ).prop('checked',true);
     }
     $('.radio').buttonset('refresh');
-    $('#food-slider').slider("value",config.maxfood);
+    $('#food-slider').slider("value", configOrEasy("maxfood"));
+  }
+
+  function configOrEasy(prop) {
+    return isNaN(config[prop]) ? configs.Easy[prop] : config[prop];
   }
 
   function start(){
